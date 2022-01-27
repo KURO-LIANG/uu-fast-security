@@ -16,7 +16,7 @@ public class GlobalCorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowCredentials(true)
-//                .allowedHeaders("Access-Control-Allow-Headers","*")
+                .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .maxAge(3600);
     }

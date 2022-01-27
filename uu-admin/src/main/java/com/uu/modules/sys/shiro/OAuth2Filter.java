@@ -3,7 +3,6 @@ package com.uu.modules.sys.shiro;
 import com.google.gson.Gson;
 import com.uu.context.HttpContextUtils;
 import com.uu.result.R;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.shiro.authc.AuthenticationException;
@@ -23,7 +22,6 @@ import java.io.IOException;
  * @author crazySea
  * @email 960236576@qq.com
  */
-@Slf4j
 public class OAuth2Filter extends AuthenticatingFilter {
 
     @Override
@@ -40,7 +38,6 @@ public class OAuth2Filter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        log.info(((HttpServletRequest) request).getMethod());
         if (((HttpServletRequest) request).getMethod().equals(RequestMethod.OPTIONS.name())) {
             return true;
         }
