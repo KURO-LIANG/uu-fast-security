@@ -10,9 +10,8 @@ package com.uu.common.config;
 
 import com.uu.modules.sys.shiro.OAuth2Filter;
 import com.uu.modules.sys.shiro.OAuth2Realm;
+import com.uu.modules.sys.shiro.ShiroUserFilter;
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.spring.LifecycleBeanPostProcessor;
-import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
@@ -30,25 +29,26 @@ import java.util.Map;
  */
 @Configuration
 public class ShiroConfig {
-    @Bean("lifecycleBeanPostProcessor")
-    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
-        return new LifecycleBeanPostProcessor();
-    }
+//    @Bean("lifecycleBeanPostProcessor")
+//    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+//        return new LifecycleBeanPostProcessor();
+//    }
+//
+//    @Bean
+//    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+//        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+//        advisor.setSecurityManager(securityManager);
+//        return advisor;
+//    }
 
-    @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
-        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
-        advisor.setSecurityManager(securityManager);
-        return advisor;
-    }
-
-    @Bean("securityManager")
-    public SecurityManager securityManager(OAuth2Realm oAuth2Realm) {
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(oAuth2Realm);
-        securityManager.setRememberMeManager(null);
-        return securityManager;
-    }
+//    @Bean("securityManager")
+//    public SecurityManager securityManager(OAuth2Realm oAuth2Realm, SessionManager sessionManager) {
+//        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+//        securityManager.setRealm(oAuth2Realm);
+//        securityManager.setSessionManager(sessionManager);
+//        securityManager.setRememberMeManager(null);
+//        return securityManager;
+//    }
 
     @Bean("shiroFilter")
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
@@ -57,6 +57,7 @@ public class ShiroConfig {
 
         //oauth过滤
         Map<String, Filter> filters = new HashMap<>();
+        filters.put("authc", new ShiroUserFilter());
         filters.put("oauth2", new OAuth2Filter());
         shiroFilter.setFilters(filters);
 
@@ -76,6 +77,19 @@ public class ShiroConfig {
         shiroFilter.setFilterChainDefinitionMap(filterMap);
 
         return shiroFilter;
+    }
+
+
+    @Bean
+    public SecurityManager securityManager(){
+        DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
+        defaultWebSecurityManager.setRealm(myRealm());
+        return defaultWebSecurityManager;
+    }
+
+    @Bean
+    public OAuth2Realm myRealm (){
+        return new OAuth2Realm();
     }
 
 }

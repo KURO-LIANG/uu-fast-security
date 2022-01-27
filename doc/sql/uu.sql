@@ -752,7 +752,6 @@ CREATE TABLE `tb_user_token` (
   `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='用户Token';
 
 -- ----------------------------

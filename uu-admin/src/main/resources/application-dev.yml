@@ -5,7 +5,8 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/xky_product_db?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
       username: root
-      password: 5149330
+#      password: 5149330
+      password: 123456
       initial-size: 10
       max-active: 100
       min-idle: 10
