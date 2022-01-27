@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<#include "/header.html">
+    <link href="${request.contextPath}/statics/css/wxMenu.css" type="text/css" rel="stylesheet"/>
+    <link href="${request.contextPath}/statics/plugins/layui/css/layui.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div class="page-container">
+    <div class="img_pick_panel">
+        <div class="img_pick_area_inner">
+            <div class="img_pick">
+                <i class="icon_loading_small white js_loading" style="display: none;"></i>
+                <ul class="group js_list img_list" style="display: block;">
+
+                </ul>
+            </div>
+            <div class="pagination_wrp pageNavigator" style="display: none;">
+                <div class="pagination" id="">
+                        <span class="page_nav_area">
+                            <a href="javascript:void(0);" class="btn page_first" style="display: none;"></a>
+                            <a href="javascript:void(0);" class="btn page_prev" style="display: none;">
+                                <i class="arrow"></i>
+                            </a>
+                            <span class="page_num">
+                                <label>1</label>
+                                <span class="num_gap">/</span>
+                                <label>2</label>
+                            </span>
+                            <a href="javascript:void(0);" class="btn page_next"><i class="arrow"></i></a>
+                            <a href="javascript:void(0);" class="btn page_last" style="display: none;"></a>
+                        </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog_ft">
+    <button type="button" class="js_btn layui-btn layui-btn-normal" data-index="0">确定</button>
+    <button type="button" class="js_btn layui-btn layui-btn-primary" data-index="1">取消</button>
+</div>
+
+<script type="text/javascript" src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
+<script type="text/javascript" src="${request.contextPath}/statics/js/modules/sys/wxpic.js?_${.now?long}"></script>
+</body>
+</html>

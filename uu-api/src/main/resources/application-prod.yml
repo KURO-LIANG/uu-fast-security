@@ -1,0 +1,79 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://47.106.210.185:3306/wechat_demo_db?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+      username: slowcomdev
+      password: slowcom@@3234
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      #Oracle需要打开注释
+      #validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        #login-username: admin
+        #login-password: admin
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+
+
+##多数据源的配置，需要引用renren-dynamic-datasource
+#dynamic:
+#  datasource:
+#    slave1:
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      url: jdbc:sqlserver://localhost:1433;DatabaseName=renren_security
+#      username: sa
+#      password: 123456
+#    slave2:
+#      driver-class-name: org.postgresql.Driver
+#      url: jdbc:postgresql://localhost:5432/renren_security
+#      username: renren
+#      password: 123456
+
+# 项目配置
+project:
+  enable-https: true
+  url_pre: https://xxx.aaa.com
+  pic_pre: https://xxx.aaa.com/images/
+  video_pre: https://xxx.aaa.com/mv/
+  uploadFilePath: D:/virtualhost/wechatDemo/images/
+
+# 微信公众号
+weCat:
+  appId: wxb591ed4db0694bca
+  appSecret: 8c4002c3e6a8ce14e898b0ea756ae119
+  key: AABBCCDDEEFFGGHHJJKKLLMMNNOOQQPP
+  accessTokenByCodeUrl: https://api.weixin.qq.com/sns/oauth2/access_token
+  userInfoUrl: https://api.weixin.qq.com/sns/userinfo
+  accessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
+  ticketUrl: https://api.weixin.qq.com/cgi-bin/ticket/getticket
+  payApi: https://api.mch.weixin.qq.com/pay/unifiedorder
+  enterprisesPay_API: https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers
+  dnbx_token: weixinMsg
+  download_media_url: http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
+  online_kf_list: https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist
+  miniQrUrl: https://api.weixin.qq.com/wxa/getwxacodeunlimit
+  miniAccessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
+  miniAppId: wx77910c5804c6e70b
+  miniAppSecret: 8f90f44b0ebadd96ccd9901e91733f65
+  long2ShortUrl: https://api.weixin.qq.com/cgi-bin/shorturl
+  batchgetUrl: https://api.weixin.qq.com/cgi-bin/user/info/batchget
+  baseUserInfoUrl: https://api.weixin.qq.com/cgi-bin/user/info

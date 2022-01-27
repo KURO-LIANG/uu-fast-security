@@ -1,0 +1,190 @@
+version: '2'
+services:
+  slowcom-register:
+    container_name: slowcom-register
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-register:0.0.01-20210717001
+    restart: unless-stopped
+    user: "root"
+    ports:
+      - "7100:7100"
+    networks:
+      - default
+      - gatewayNet
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_register/datadir/logs:/opt/slowcom_register/logs"
+      - "/data/www/slowcom_register/datadir:/data/slowcom_register/datadir"
+
+  slowcom-config:
+    container_name: slowcom-config
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-config:0.0.01-20210719001
+    restart: unless-stopped
+    user: "root"
+    ports:
+      - "7103:7103"
+    depends_on:
+      - slowcom-register
+    networks:
+      - default
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_config/datadir/logs:/opt/slowcom_config/logs"
+      - "/data/www/slowcom_config/datadir:/data/slowcom_config/datadir"
+
+  slowcom-monitor:
+    container_name: slowcom-monitor
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-monitor:0.0.01-20210717001
+    restart: unless-stopped
+    user: "root"
+    ports:
+      - "7102:7102"
+    networks:
+      - default
+      - gatewayNet
+    depends_on:
+      - slowcom-register
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_monitor/datadir/logs:/opt/slowcom_monitor/logs"
+      - "/data/www/slowcom_monitor/datadir:/data/slowcom_monitor/datadir"
+
+  slowcom-admin:
+    container_name: slowcom-admin
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-admin:0.0.02-20210923
+    restart: unless-stopped
+    user: "root"
+    ports:
+      - "7201:7201"
+    depends_on:
+      - slowcom-register
+      - slowcom-config
+      - slowcom-monitor
+    networks:
+      - default
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_admin/datadir/logs:/opt/slowcom_admin/logs"
+      - "/data/www/slowcom_admin/datadir:/data/slowcom_admin/datadir"
+
+  slowcom-user:
+    container_name: slowcom-user
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-user:0.0.01-20210817001
+    restart: unless-stopped
+    user: "root"
+    ports:
+      - "7202:7202"
+    depends_on:
+      - slowcom-register
+      - slowcom-config
+      - slowcom-monitor
+    networks:
+      - default
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_user/datadir/logs:/opt/slowcom_user/logs"
+      - "/data/www/slowcom_user/datadir:/data/slowcom_user/datadir"
+
+  slowcom-family:
+    container_name: slowcom-family
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-family:0.0.02-20210923
+    restart: unless-stopped
+    user: "root"
+    ports:
+      - "7204:7204"
+    depends_on:
+      - slowcom-register
+      - slowcom-config
+      - slowcom-monitor
+    networks:
+      - default
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_family/datadir/logs:/opt/slowcom_family/logs"
+      - "/data/www/slowcom_family/datadir:/data/slowcom_family/datadir"
+
+  slowcom-devices:
+    container_name: slowcom-devices
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-devices:0.0.02-20210923
+    restart: unless-stopped
+    user: "root"
+    ports:
+      - "7203:7203"
+    depends_on:
+      - slowcom-register
+      - slowcom-config
+      - slowcom-monitor
+    networks:
+      - default
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_devices/datadir/logs:/opt/slowcom_devices/logs"
+      - "/data/www/slowcom_devices/datadir:/data/slowcom_devices/datadir"
+
+  slowcom-msg:
+    container_name: slowcom-msg
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-msg:0.0.01-20210726002
+    restart: unless-stopped
+    user: "root"
+    ports:
+      - "7206:7205"
+    depends_on:
+      - slowcom-register
+      - slowcom-config
+      - slowcom-monitor
+    networks:
+      - default
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_msg/datadir/logs:/opt/slowcom_msg/logs"
+      - "/data/www/slowcom_msg/datadir:/data/slowcom_msg/datadir"
+
+  slowcom-gateway:
+    container_name: slowcom-gateway
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/slowcom-gateway:0.0.01-20210811001
+    restart: unless-stopped
+    user: "root"
+    networks:
+      - default
+      - gatewayNet
+    ports:
+      - "7101:7101"
+    environment:
+      spring_profiles_active: prod
+      TZ: Asia/Shanghai
+    volumes:
+      - "/data/www/slowcom_gateway/datadir/logs:/opt/slowcom_gateway/logs"
+      - "/data/www/slowcom_gateway/datadir:/data/slowcom_gateway/datadir"
+
+  smart-community-ui:
+    container_name: smart-community-ui
+    image: registry.cn-shenzhen.aliyuncs.com/hanyou/smart-community-ui:0.0.01-20210806001
+    restart: unless-stopped
+    user: "root"
+    networks:
+      - default
+      - gatewayNet
+    ports:
+      - "7205:80"
+
+networks:
+  default:
+    driver: bridge
+  gatewayNet:
+    external:
+      name: myNetwork

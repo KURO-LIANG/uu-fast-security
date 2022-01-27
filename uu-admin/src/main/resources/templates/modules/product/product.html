@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商品表</title>
+		<#include "/header.html">
+    <!--layerui-->
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css?_${.now?long}">
+    <style>
+        .input-text{
+            box-sizing: border-box;
+            border: solid 1px #ddd;
+            width: 100%;
+            -webkit-transition: all .2s linear 0s;
+            -moz-transition: all .2s linear 0s;
+            -o-transition: all .2s linear 0s;
+            transition: all .2s linear 0s;
+            font-size: 14px;
+            height: 31px;
+            line-height: 1.42857;
+            padding: 4px;
+        }
+        .input-text:hover{
+            border: solid 1px #3bb4f2;
+        }
+
+        .AD .label{
+            padding: 2px 5px;
+            background: #5FB878;
+            border-radius: 2px;
+            color: #fff;
+            display: block;
+            line-height: 20px;
+            height: 24px;
+            margin: 2px 5px 2px 0;
+            float: left;
+        }
+        .layui-form-label{
+            width: 90px !important;
+        }
+        .AD i{
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center
+        }
+        .AD .label:hover{color: white;}
+        .AD .label i:hover {
+            background-color: #009E94;
+            border-radius: 2px;
+        }
+        .layui-form-select dl dd:hover {
+            background-color: #5FB878;
+            color: white;
+        }
+        .AD{
+            width: 600px;
+            margin-left: 40px;
+            overflow-y: auto;
+            max-height: 200px;
+            border: 2px solid #5fb878;
+            border-radius: 6px;
+            padding: 1px 2px;
+        }
+
+
+        .size_s{
+            position: relative;
+            margin-bottom: 15px;
+            padding: 0 0 0 10px;
+        }
+        .key_wrap{
+            border: 1px dashed #dcdfe6;
+            padding: 10px 10px;
+            flex-wrap: wrap;
+        }
+        .closeKey{
+            position: absolute;
+            top: -13px;
+            right: -7px;
+            border: 1px solid #807e7e;
+            height: 20px;
+            background: #fff;
+            opacity: .8;
+            width: 20px;
+            text-align: center;
+            line-height: 18px;
+            border-radius: 10px;
+        }
+
+        .closeKey i{
+            font-size: 8px;
+            color: red;
+            cursor: pointer;
+        }
+        .editKey{
+            position: absolute;
+            top: -13px;
+            right: 19px;
+            border: 1px solid #807e7e;
+            height: 20px;
+            background: #fff;
+            opacity: .8;
+            width: 20px;
+            text-align: center;
+            line-height: 18px;
+            border-radius: 10px;
+        }
+
+        .editKey i{
+            font-size: 8px;
+            color: red;
+            cursor: pointer;
+        }
+        .flex_row {
+            display: flex;
+            flex-direction: row;
+        }
+        .keyitem{
+            width: 227px;
+            margin-right: 20px;
+            border: 1px solid #dcdfe6;
+            background: #fafafa;
+            font-size: 12px;
+            color: #212430;
+            margin-bottom: 10px;
+            height: 30px;
+            position: relative;
+            line-height: 30px;
+            border-radius: 4px;
+        }
+
+        .keyitem .nameStr{
+            display: inline-block;
+            padding-left: 10px;
+            width: 150px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+
+        .self_input{
+            height: 32px;
+            line-height: 32px;
+            border: 1px solid #dcdfe6;
+            padding: 0 15px;
+            width: 280px;
+        }
+        .keyitem .layui-form-checkbox{
+            margin: 6px 20px!important;
+            width: 100% !important;
+        }
+        .Takeall .layui-form-checkbox{
+            margin-top: 0!important;
+        }
+        .changeChooseType{
+            color: #1a92fd;
+        }
+        .keyitem .layui-form-checkbox>span>span{
+            color:#bf8703;
+        }
+        .banner:hover{
+            border:1px solid red;
+            cursor: pointer;
+        }
+        #dlBox{
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div style="text-align: center;margin:15px 0px;">
+            <!--            <div class="layui-form" style="width: 300px;">-->
+            <!--                <div class="layui-form-item">-->
+            <!--                    <label class="layui-form-label">单行选择框</label>-->
+            <!--                    <div class="layui-input-block">-->
+            <!--                        <select id="allCateType">-->
+            <!--                            <option value="0" >{{cateList.length>0 ? '请选择商品品类' : '尚未添加品类'}}</option>-->
+            <!--                            <option :value="item.id" v-for="(item,index) in cateList">{{item.categoryName}}</option>-->
+            <!--                        </select>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <input type="text" name="" onfocus="this.select()" onkeypress="JumpByEnter()"
+                   id="searchVal"
+                   placeholder=" 商品名称" style="width:400px" class="input-text">
+            <button name="" id="search_btn" class="btn btn-success" type="button">
+                <i class="fa fa-search" aria-hidden="true" style="font-style: normal;"> 搜索</i>
+            </button>
+        </div>
+        <div class="grid-btn">
+			<#if shiro.hasPermission("product:product:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("product:product:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("product:product:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-card">
+            <div class="layui-card-header">{{title}}商品</div>
+            <div class="layui-card-body">
+                <form class="layui-form" action=""  onkeypress="return event.keyCode != 13;">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>基本信息</legend>
+                    </fieldset>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品品类</label>
+                        <div class="layui-input-block" style="width: 300px;">
+                            <select name="category" lay-filter="category" lay-verify="required" lay-reqText="请选择商品品类" id="cateType" v-model="product.productCateId">
+                                <option value="0" >{{cateList.length>0 ? '请选择商品品类' : '尚未添加品类'}}</option>
+                                <option :value="item.id" v-for="(item,index) in cateList">{{item.categoryName}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>商品信息</legend>
+                    </fieldset>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-block" style="width: 300px;">
+                            <input type="text" name="productName" lay-verify="required" lay-reqText="请填写商品名称"
+                                   v-model="product.productName" placeholder="商品名称" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品主图</label>
+                        <div class="layui-input-block">
+                            <div class="layui-upload-drag" id="productImgIcon">
+                                <i class="layui-icon"></i>
+                                <p>点击上传，或将图片拖拽到此处</p>
+                                <div :class="!product.id ? 'layui-hide' : ''" id="productImg">
+                                    <hr>
+                                    <img class="productImg" :src="product.productPic ? product.productPic : ''"
+                                         alt="上传成功后渲染" style="max-width: 196px">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品副图</label>
+                        <div class="layui-input-block">
+                            <div class="layui-upload">
+                                <button type="button" class="layui-btn" id="productBannerBtn">多图片上传</button>
+                                <blockquote class="layui-elem-quote layui-quote-nm productBannerBlock"
+                                            lay-verify="productBanner"
+                                            style="margin-top: 10px;max-width: 1000px;">
+                                    预览图：
+                                    <div class="layui-upload-list" id="productBanner">
+                                        <img v-for="(item,index) in productBanner" title="点击删除" width="300" :src="'/images/' + item" onclick="$(this).remove()" class="layui-upload-img banner" style="margin-right: 5px;">
+                                    </div>
+                                </blockquote>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品售价</label>
+                        <div class="layui-input-inline" style="width: 300px;">
+                            <input type="number" min="0" name="productPrice" lay-verify="required" lay-reqText="请填写商品售价"
+                                   v-model="product.productPrice" placeholder="￥" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品原价</label>
+                        <div class="layui-input-inline" style="width: 300px;">
+                            <input type="number" min="0" v-model="product.productOriginPrice" placeholder="￥"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品SKU</label>
+                        <div class="layui-input-inline" style="width: 300px;">
+                            <input type="text" v-model="product.productSku" name="productSku" lay-verify="required"
+                                   lay-reqText="请填写商品SKU" placeholder="商品SKU" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>规格/库存</legend>
+                    </fieldset>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">规格定制</label>
+                        <div class="layui-input-block">
+                            <input id="productDiyFlag" type="checkbox" lay-filter="switchDiy"
+                                   name="diy" lay-skin="switch"
+                                   lay-text="支持|不支持">
+                        </div>
+                    </div>
+                    <div class="layui-form-item productDiyDiv" :style="product.productDiyFlag == 1 ? '':'display: none;'">
+                        <div id="attributeBox">
+                            <div class="layui-form-item selectedAttribute" :style="selectedAttribute ? '':'display: none;'">
+                                <label class="layui-form-label">已选择规格</label>
+                                <div class="AD">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div id="attributeValueBox">
+
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">虚拟销量</label>
+                        <div class="layui-input-inline" style="width: 300px;">
+                            <input type="number" min="0" lay-verify="required" lay-reqText="请填写虚拟销量"
+                                   v-model="product.productVirtualSales" name="productVirtualSales" lay-verify="required"
+                                   placeholder="真实订单确认后会自动增加一定数量" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品详情</label>
+                        <div class="layui-input-block">
+                            <div>
+                                <script id="baseDataEditor" type="text/plain" style="width:600px;height:400px;"></script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发布状态</label>
+                        <div class="layui-input-block" style="width: 300px;">
+                            <select id="productState" name="productState" lay-filter="productState">
+                                <option value="1" selected="">上架</option>
+                                <option value="0">下架</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" id="btnSaveOrUpdate" data-loading-text="保存中..."  class="layui-btn" lay-submit="" lay-filter="productSubmit" >
+                                立即提交
+                            </button>
+                            <button type="reset" @click="reload" class="layui-btn layui-btn-primary">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--layerui-->
+<script type="text/javascript" src="${request.contextPath}/statics/plugins/layui/layui.js?_${.now?long}"></script>
+<!--规格选择-->
+<script type="text/javascript" src="${request.contextPath}/statics/plugins/searchableSelects/MySearch.js?_${.now?long}"></script>
+<!--多选下拉支持搜索-->
+<script type="text/javascript" src="${request.contextPath}/statics/plugins/searchableSelects/xm-select.js?_${.now?long}"></script>
+<script type="text/javascript" src="${request.contextPath}/statics/libs/ueditor/1.4.3/ueditor.config.js?_${.now?long}"></script>
+<script type="text/javascript" src="${request.contextPath}/statics/libs/ueditor/1.4.3/ueditor.all.js?_${.now?long}"></script>
+<script type="text/javascript" src="${request.contextPath}/statics/libs/ueditor/1.4.3/lang/zh-cn/zh-cn.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/js/modules/product/product.js?_${.now?long}"></script>
+</body>
+</html>

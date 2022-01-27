@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商品种类表</title>
+		<#include "/header.html">
+    <!--layerui-->
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css?_${.now?long}">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;添加分类</a>
+
+    <div id="test" class="demo-tree-more" style="margin-top: 20px;"></div>
+</div>
+
+<!--layerui-->
+<script type="text/javascript" src="${request.contextPath}/statics/plugins/layui/layui.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/js/modules/product/productcategory.js?_${.now?long}"></script>
+</body>
+</html>

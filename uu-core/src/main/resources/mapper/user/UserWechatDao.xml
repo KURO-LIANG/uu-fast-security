@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.uu.dao.UserWechatDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.uu.modules.user.entity.UserWechatEntity" id="userWechatMap">
+        <result property="wechatId" column="wechat_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="avatar" column="avatar"/>
+        <result property="gender" column="gender"/>
+        <result property="birthday" column="birthday"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="country" column="country"/>
+        <result property="miniOpenId" column="mini_open_id"/>
+        <result property="unionId" column="union_id"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <result property="lastLoginInfo" column="last_login_info"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+    </resultMap>
+    <update id="updateLngAndLat" parameterType="java.util.List">
+        <foreach collection="list" item="item"  index="index" open="" close="" separator=";">
+            update tb_user_wechat set long_and_lati=#{item.longAndLati} where province=#{item.province} and city=#{item.city}
+        </foreach>
+    </update>
+
+
+    <select id="countUserForGeo" resultType="com.uu.modules.user.dto.GeoCityDto">
+        select province,city,count(1) as `value`,long_and_lati from tb_user_wechat where city != '' GROUP BY city
+    </select>
+
+
+</mapper>

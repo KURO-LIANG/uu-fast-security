@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>限时特惠活动</title>
+		<#include "/header.html">
+    <!--layerui-->
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css?_${.now?long}">
+    <style>
+        .layui-form-label{
+            width: 120px !important;
+        }
+        .layui-input-block{
+            margin-left:140px !important;
+        }
+    </style>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("active:activespecialprice:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("active:activespecialprice:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("active:activespecialprice:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="layui-card">
+            <div class="layui-card-header">{{title}}活动</div>
+            <div class="layui-card-body">
+                <form class="layui-form" action=""  onkeypress="return event.keyCode != 13;">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品</label>
+                        <div class="layui-input-block" style="width: 300px;">
+                            <select name="productId" lay-filter="productId" lay-verify="required" lay-reqText="请选择商品" id="productId" v-model="activeSpecialPrice.productId">
+                                <option value="0" >{{productList.length>0 ? '请选择商品' : '尚未添加商品'}}</option>
+                                <option :value="item.id" v-for="(item,index) in productList">{{item.productName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动价格</label>
+                        <div class="layui-input-block" style="width: 300px;">
+                            <input type="number" min="0" v-model="activeSpecialPrice.activePrice" placeholder="￥"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label star">活动开始时间</label>
+                        <div class="layui-input-block" style="width: 300px;">
+                            <input type="text" name="date" lay-reqText="请选择活动开始时间"
+                                   v-model="activeSpecialPrice.startTime"
+                                   lay-verify="startTime" id="datetimeStart" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label star">活动结束时间</label>
+                        <div class="layui-input-block" style="width: 300px;">
+                            <input type="text" name="date" v-model="activeSpecialPrice.endTime" lay-reqText="请选择活动结束时间"
+                                   lay-verify="endTime" id="datetimeEnd" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动状态</label>
+                        <div class="layui-input-block" style="width: 300px;">
+                            <select id="status" name="status" lay-filter="status">
+                                <option value="0">未开始</option>
+                                <option value="1">活动进行中</option>
+                                <option value="2">活动已结束</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" id="btnSaveOrUpdate" data-loading-text="保存中..."  class="layui-btn" lay-submit="" lay-filter="btnSubmit" >
+                                立即提交
+                            </button>
+                            <button type="reset" @click="reload" class="layui-btn layui-btn-primary">取消</button>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--layerui-->
+<script type="text/javascript" src="${request.contextPath}/statics/plugins/layui/layui.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/js/modules/active/activespecialprice.js?_${.now?long}"></script>
+</body>
+</html>

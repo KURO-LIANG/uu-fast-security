@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>订单购买消息表</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("ordermsg:ordermsg:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("ordermsg:ordermsg:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("ordermsg:ordermsg:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+														                    <div class="form-group">
+                        <div class="col-sm-2 control-label">删除标记 0：正常，1：删除</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.delFlag" placeholder="删除标记 0：正常，1：删除"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">乐观锁</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.version" placeholder="乐观锁"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">订单号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.orderNo" placeholder="订单号"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">用户ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.userId" placeholder="用户ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">商品ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.productId" placeholder="商品ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">星级 0-5</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.remarkLevel" placeholder="星级 0-5"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">评论</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.orderRemark" placeholder="评论"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">添加时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.createTime" placeholder="添加时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">编辑时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.updateTime" placeholder="编辑时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">操作人</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderMsg.updateBy" placeholder="操作人"/>
+                        </div>
+                    </div>
+							            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..." @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/ordermsg/ordermsg.js?_${.now?long}"></script>
+</body>
+</html>

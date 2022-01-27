@@ -1,0 +1,101 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://mariadb:3306/market_sales_db?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+      username: root
+      password: market@33223344
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      #Oracle需要打开注释
+      #validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        #login-username: admin
+        #login-password: admin
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+
+  redis:
+    database: 0
+    host: redis
+    port: 6379
+    password:      # 密码（默认为空）
+    timeout: 6000ms  # 连接超时时长（毫秒）
+    jedis:
+      pool:
+        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10      # 连接池中的最大空闲连接
+        min-idle: 5       # 连接池中的最小空闲连接
+##多数据源的配置，需要引用renren-dynamic-datasource
+#dynamic:
+#  datasource:
+#    slave1:
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      url: jdbc:sqlserver://localhost:1433;DatabaseName=renren_security
+#      username: sa
+#      password: 123456
+#    slave2:
+#      driver-class-name: org.postgresql.Driver
+#      url: jdbc:postgresql://localhost:5432/renren_security
+#      username: renren
+#      password: 123456
+
+# 项目配置
+project:
+  enable-https: true
+  url_pre: https://test.api.maojimall.com
+  pic_pre: https://test.api.maojimall.com/images/
+  video_pre: https://test.api.maojimall.com/mv/
+  uploadFilePath: /data/www/market/images/
+
+# 微信支付配置
+wx:
+  pay:
+    appId: wx323a25bf8f5af149 #微信公众号appid
+    appSecret: 4ad79c3a310d166fb620197e7018f05c #公众号appSecret
+    mchId: 1614447870 #微信支付商户号
+    mchKey: AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP #微信支付商户密钥
+    subAppId: #服务商模式下的子商户公众账号ID
+    subMchId: #服务商模式下的子商户号
+    keyPath: /Users/liangqing/wechat/1614447870/apiclient_cert_manyun.p12 # os p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+
+# 微信公众号
+weCat:
+  appId: wx323a25bf8f5af149
+  appSecret: 4ad79c3a310d166fb620197e7018f05c
+  key: AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP
+  accessTokenByCodeUrl: https://api.weixin.qq.com/sns/oauth2/access_token
+  userInfoUrl: https://api.weixin.qq.com/sns/userinfo
+  accessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
+  ticketUrl: https://api.weixin.qq.com/cgi-bin/ticket/getticket
+  payApi: https://api.mch.weixin.qq.com/pay/unifiedorder
+  enterprisesPay_API: https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers
+  dnbx_token: weixinMsg
+  download_media_url: http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
+  online_kf_list: https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist
+  miniQrUrl: https://api.weixin.qq.com/wxa/getwxacodeunlimit
+  miniAccessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
+  miniAppId: wx77910c5804c6e70b
+  miniAppSecret: 8f90f44b0ebadd96ccd9901e91733f65
+  long2ShortUrl: https://api.weixin.qq.com/cgi-bin/shorturl
+  batchgetUrl: https://api.weixin.qq.com/cgi-bin/user/info/batchget
+  baseUserInfoUrl: https://api.weixin.qq.com/cgi-bin/user/info

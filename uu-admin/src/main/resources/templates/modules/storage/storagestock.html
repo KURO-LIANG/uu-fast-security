@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>出入库表</title>
+		<#include "/header.html">
+    <!--layerui-->
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css?_${.now?long}">
+
+    <style>
+        .layui-form-label{
+            width: 120px !important;
+        }
+        .layui-input-block{
+            margin-left:140px !important;
+        }
+    </style>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("storage:storagestock:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("storage:storagestock:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("storage:storagestock:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="layui-card">
+                <div class="layui-card-header">{{title}}库</div>
+                <div class="layui-card-body">
+                    <form class="layui-form" action=""  onkeypress="return event.keyCode != 13;">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">商品</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <select name="productId" lay-filter="productId" lay-verify="required" lay-reqText="请选择商品" id="productId" v-model="activeSpecialPrice.productId">
+                                    <option value="0" >{{productList.length>0 ? '请选择商品' : '尚未添加商品'}}</option>
+                                    <option :value="item.id" v-for="(item,index) in productList">{{item.productName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">商品属性</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <select name="attributeId" id="attributeId">
+                                    <option :value="item.id" v-for="(item,index) in attributeList">{{item.attributeName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">属性值</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <select name="attributesValueId" id="attributesValueId" >
+                                    <option value="0" >{{productList.length>0 ? '请选择商品' : '尚未添加商品'}}</option>
+                                    <option :value="item.id" v-for="(item,index) in attributeValueList">{{item.attributeValueName}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">活动价格</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <input type="number" min="0" v-model="activeSpecialPrice.activePrice" placeholder="￥"
+                                       autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label star">活动开始时间</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <input type="text" name="date" lay-reqText="请选择活动开始时间"
+                                       v-model="activeSpecialPrice.startTime"
+                                       lay-verify="startTime" id="datetimeStart" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label star">活动结束时间</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <input type="text" name="date" v-model="activeSpecialPrice.endTime" lay-reqText="请选择活动结束时间"
+                                       lay-verify="endTime" id="datetimeEnd" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">活动状态</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <select id="status" name="status" lay-filter="status">
+                                    <option value="0">未开始</option>
+                                    <option value="1">活动进行中</option>
+                                    <option value="2">活动已结束</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="submit" id="btnSaveOrUpdate" data-loading-text="保存中..."  class="layui-btn" lay-submit="" lay-filter="btnSubmit" >
+                                    立即提交
+                                </button>
+                                <button type="reset" @click="reload" class="layui-btn layui-btn-primary">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">商品id</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="storageStock.productId" placeholder="商品id"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">商品某个规格值id，有此值代表仅对商品的某个规格值进行出入库</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="storageStock.productAttributesValueId"
+                           placeholder="商品某个规格值id，有此值代表仅对商品的某个规格值进行出入库"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">出入库数量</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="storageStock.productNumber" placeholder="出入库数量"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">出入库类型 0-入库，1-出库</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="storageStock.stockType"
+                           placeholder="出入库类型 0-入库，1-出库"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">出入库内容</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="storageStock.stockContent" placeholder="出入库内容"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">添加时间</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="storageStock.createTime" placeholder="添加时间"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">编辑时间</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="storageStock.updateTime" placeholder="编辑时间"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">操作人</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="storageStock.updateBy" placeholder="操作人"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..."
+                       @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/storage/storagestock.js?_${.now?long}"></script>
+</body>
+</html>
